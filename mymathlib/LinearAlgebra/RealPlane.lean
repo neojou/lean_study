@@ -1,6 +1,13 @@
-import Pythagorean.InnerProduct
+import LinearAlgebra.InnerProduct
 
-/-! The standard dot product gives a concrete real inner-product space on ℝ². -/
+/-!
+# The standard real plane
+
+The Cartesian plane `ℝ × ℝ` is a concrete two-dimensional real vector space.
+Its standard dot product is the sum of coordinate-wise products. This file
+checks directly that the dot product satisfies the inner-product properties,
+so the abstract theorem from `LinearAlgebra.InnerProduct` applies to it.
+-/
 
 def realPlaneInner : RealInnerProductSpace (ℝ × ℝ) where
   inner u v := u.1 * v.1 + u.2 * v.2
@@ -34,9 +41,3 @@ def realPlaneInner : RealInnerProductSpace (ℝ × ℝ) where
     · intro h
       subst u
       norm_num
-
-theorem real_plane_pythagorean (u v : ℝ × ℝ)
-    (horth : realPlaneInner.inner u v = 0) :
-    normSq realPlaneInner (u + v) =
-      normSq realPlaneInner u + normSq realPlaneInner v := by
-  exact real_inner_pythagorean realPlaneInner u v horth

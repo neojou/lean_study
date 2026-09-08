@@ -1,2 +1,0 @@
-import Pythagorean.InnerProduct
-import Pythagorean.RealPlane

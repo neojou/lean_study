@@ -1,7 +1,7 @@
-name = "pythagorean"
+name = "mymathlib"
 version = "0.1.0"
 keywords = ["math", "theorem-proving", "inner-product-space"]
-defaultTargets = ["Pythagorean", "pythagorean"]
+defaultTargets = ["LinearAlgebra", "Trigonometry", "Pythagorean", "mymathlib"]
 
 [leanOptions]
 pp.unicode.fun = true
@@ -15,8 +15,14 @@ scope = "leanprover-community"
 rev = "v4.34.0-rc2"
 
 [[lean_lib]]
+name = "LinearAlgebra"
+
+[[lean_lib]]
 name = "Pythagorean"
 
+[[lean_lib]]
+name = "Trigonometry"
+
 [[lean_exe]]
-name = "pythagorean"
+name = "mymathlib"
 root = "Main"
