@@ -689,7 +689,7 @@ w ⊩ ∃x φ    ⇔    存在 a ∈ D(w)，使得 w ⊩ φ[a/x]
 
 ## 18. 對 Lean 編碼的對照（極短）
 
-邏輯概念落在程式裡的位置如下。細節與學習順序在 [`TASKS.md`](TASKS.md)。
+邏輯概念落在程式裡的位置如下。細節與學習順序在 [`TASKS.md`](TASKS.md)。Phase 1（公式語法）的課堂講義與作業在 [`lession1.md`](lession1.md)。**講義為何存在、模型不要代寫：** [`handoff.md`](handoff.md) 第 1 節。
 
 | 邏輯 | Lean（命題階段） |
 |---|---|

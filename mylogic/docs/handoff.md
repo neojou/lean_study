@@ -1,231 +1,239 @@
 # Handoff：在 Lean 4 裡自建公理系統（對象邏輯）
 
-> 寫給下一個 session（預計切到 **Grok Build**）接著實作。
-> 日期：2026-09-09。語言：繁體中文。作者脈絡：Neo Jou / Lean 4 科普筆記。
+> 寫給**下一個 session**。作者接下來會改在 **瀏覽器介面** 和 Grok 溝通（不一定還是 Grok Build TUI）。
+> 日期：2026-09-09。語言：繁體中文。作者：Neo Jou／Lean 4 科普筆記。
+> 進度以 [`TASKS.md`](TASKS.md) 為準；硬約束以 [`AGENTS.md`](AGENTS.md) 為準。
 
 ---
 
-## 這份文件從哪裡來
+## 0. 下一輪模型立刻要做的事
 
-上一輪對話問的是：
+你是助教，不是代工。
 
-> 是否可以用 Lean 重頭搭建自己的公理邏輯系統，例如用現代邏輯、不用排中律，甚至機率邏輯？
+1. 先讀本檔第 0–4 節，再決定要不要打開別的文件。
+2. 作者若在做 Phase 1：打開 [`lession1.md`](lession1.md)，**批改／答疑**。**不要**把 `Mylogic/Formula.lean` 寫完交給他。
+3. 作者若貼出作業或錯誤訊息：對照 `lession1.md` 的 HW1.1–HW1.5 驗收清單，指出哪一條沒過、為什麼。
+4. 作者若問「為什麼不直接寫程式」：用本檔第 1 節回答。
+5. 在 IPC 的後設性質做完之前，不要開模態、機率邏輯、FOL 實作、Mathlib。
 
-結論：**可以，但要把兩種「從頭搭建」分開。** 本 handoff 記錄那個區分、限制、以及已經講過的務實路線。目標不是再解釋一遍 Lean 是什麼，而是讓下一輪可以直接寫程式。
-
-相關既有專案（別跟這條線搞混）：
-
-- 科普部落格：Lean 4 緣由與發展；風格通順、帶一點幽默、平易近人。
-- Day 0：環境設置 https://njiot.blogspot.com/2026/09/lean-day-0-20260906.html
-- Day 1：用餘弦定理在 Lean 中證明畢氏定理；數學推導另刊 https://njscientia.blogspot.com/2026/09/blog-post.html
-- 主要數學 repo：https://github.com/neojou/lean_study/tree/main/mymathlib
-- 本機草稿：`artifacts/mylogic/`（對象邏輯實驗，見文末「目前程式狀態」）
-
-`mymathlib` 是「在 Lean 的邏輯裡做數學」。`mylogic` 是「用 Lean 當後設語言，編碼另一套邏輯」。兩條線分開維護。
+若瀏覽器裡的模型**看不到 repo**：請作者把本檔與 `lession1.md` 貼上（或至少貼第 11 節的開場白）。
 
 ---
 
-## 必須先分清的兩件事
+## 1. 為何會有 `lession1.md`
+
+檔名就是 `lession1.md`（作者指定的拼寫）。**不要**改名成 `lesson1.md`。
+
+### 它不是規格書的複本
+
+對象邏輯要長成什麼樣子，已經寫在 [`first-order-logic.md`](first-order-logic.md)。Lean 分幾個 Phase 做，已經寫在 [`TASKS.md`](TASKS.md)。`lession1.md` 是另一種文件：**大學一週的課堂講義**——先講為什麼，再出作業，由作者自己把 Phase 1 做完。
+
+### 它怎麼來的（同一天的決策）
+
+1. 更早的對話問：能不能在 Lean 裡自建公理系統（現代邏輯、不用排中律、甚至機率邏輯）。結論是可以，但必須走「Lean 當後設語言、編碼對象邏輯」（本檔第 5 節的路線 B），不是關掉 Lean 的 `Classical` 就算自建。
+2. 接著用 `lake new mylogic` 搭了專案。文件課綱把工作切成 Phase 0–8。Phase 0（能 `lake build`／`lake exe`）作者已完成。
+3. 輪到 Phase 1（`inductive Formula`、定義連詞、scoped notation）時，作者**明確要求不要直接實作**，而是：
+   - 扮演大學教授；
+   - 把需要的知識寫進 `mylogic/docs/lession1.md`；
+   - 循序規劃 Homework，**由作者實作**；
+   - 這些作業都做好時，Phase 1 也就完成。
+4. 動機：這條線要寫進科普、也要當學習 Lean 與公理證明的練習。若模型把 `Formula.lean` 一次貼完，作者只得到一個能編的檔，學不到「公式是資料、不是 `Prop`」。
+
+### 講義在教什麼、作業在驗什麼
+
+本週**只做對象語法**。沒有 `⊢`、沒有 NJ、沒有 Kripke。手癢寫 `Deduction.lean` 的話，請壓住。
+
+| 作業 | 作者要自己做出來的 | 對應 Phase 1 |
+|---|---|---|
+| HW1.1 | `inductive Formula`，五個 constructor，三個純 constructor 例子 | 語法落地 |
+| HW1.2 | `def Formula.neg`／`verum`（**不是** constructor），定義性 `rfl` | `∼`、`⊤ᵢ` 是縮寫 |
+| HW1.3 | scoped 記號 `⟂ ⊤ᵢ ∼ ⋀ ⋁ ⇒ ⟪p⟫`，解析 `rfl`，吉祥物 `⟪0⟫ ⋀ ∼⟪0⟫` | 兩層記號分開 |
+| HW1.4 | `Formula.size`（`∼p` 與 `⊤ᵢ` 都是 3） | 結構遞迴；講義比 TASKS 原列多這一項 |
+| HW1.5 | `Mylogic.lean` import `Mylogic.Formula`；`lake build` 綠；exe 仍 Hello | 接上函式庫 |
+
+五份都過 → 把 [`TASKS.md`](TASKS.md) Phase 1 核取清單打勾。HW1.4 是課堂練習，仍留在 `Formula.lean`，不進入 Phase 2。
+
+### 模型對這份講義的態度
+
+- **當教授／助教**：解釋概念、對錯誤訊息、對照驗收、提示附錄 A 的常見叉。
+- **不當代筆**：不要交出一份完整可交的 `Formula.lean`。不要「為了幫他過關」把作業三的 `rfl` 加上括號改考題。
+- **不要改寫講義**，除非作者要求改作業設計。規格有變，先改 `first-order-logic.md` 再改講義。
+
+---
+
+## 2. 文件地圖（先讀哪個）
+
+全部在 `mylogic/docs/`：
+
+| 檔案 | 角色 | 瀏覽器這輪要不要打開 |
+|---|---|---|
+| **本檔 `handoff.md`** | 交接、現況、行為規範 | 必讀 |
+| [`lession1.md`](lession1.md) | Phase 1 講義 + HW1.1–1.5 | 作者在做 Phase 1 就讀 |
+| [`AGENTS.md`](AGENTS.md) | 硬約束、決策紀錄（給模型的短清單） | 建議讀 |
+| [`TASKS.md`](TASKS.md) | 全課綱 Phase 0–8 | 需要看中期路線再讀 |
+| [`first-order-logic.md`](first-order-logic.md) | 邏輯學規格（IPC／NJ／Kripke／IQC） | 作者問「公理是什麼」再讀 |
+
+讀檔順序：`handoff.md` →（Phase 1）`lession1.md` → 卡住再看 `AGENTS.md`。不要一開場把規格書第 14 節的量詞規則講完。
+
+兩條 repo 線不要混：
+
+- `mymathlib/`：在 Lean 的邏輯裡做數學（畢氏定理那條）。
+- `mylogic/`：用 Lean 編碼**另一套**對象邏輯。本交接只談這條。
+
+---
+
+## 3. 目前程式狀態（2026-09-09 離開 TUI 時）
+
+實作目錄是 repo 內的 **`mylogic/`**（`lake new mylogic`）。模組／namespace 是 **`Mylogic`**（Lake 預設），不是早期草稿的 `MyLogic`。
+
+**不是** `artifacts/mylogic/`。那個目錄不在本 repo；舊文若寫「Formula.lean 已有 NJ 規則」，指的是當時本機草稿，**不要**當成這個 Lake 專案已經有那些檔。
+
+### Phase 0 — 完成
+
+作者已能 `lake build`、`lake exe mylogic`，輸出 `Hello, world!`（在尚未誤加錯誤 import 之前；見下）。
+
+- Lean `v4.33.1`；`lakefile.toml` **無 Mathlib**；`lake-manifest.json` 的 `packages` 為空。
+- 保留模板：`Mylogic/Basic.lean` 的 `hello := "world"`；`Main.lean` 印 Hello。**不要刪**，HW1.5 仍要求 exe 印 Hello。
+
+### Phase 1 — 講義已出，程式剛起頭，**尚未完成**
+
+作者已開始碰檔案，但 **HW1.1 還沒做出歸納型**：
+
+- `Mylogic/Formula.lean` 目前幾乎是空的，只剩一行註解，大意是想寫 `⟪0⟫ ⋀ ∼⟪0⟫` 這種例子（連 inductive 都還沒有）。
+- `Mylogic.lean` 在 `import Mylogic.Basic` 之外多了一行 **`import MyLogic.Formula`**（大寫 L）。這是舊命名。正確是 `import Mylogic.Formula`。這個大小寫不一致會讓 **`lake build` 掛掉**（連結器找不到 `initialize_mylogic_MyLogic_Formula`）。
+- 這不表示模型該把 Formula 寫完。若作者問為什麼編不過：先提示 **import 必須是 `Mylogic.Formula`**，以及 HW1.1 要求檔案裡要有 `inductive Formula`。作業五才規定入口一定要 import；作業一可以先讓 `Formula.lean` 自己過檢查。
+
+### 還沒開始
+
+`Deduction.lean`、`Examples.lean`、`Kripke.lean`、FOL、Modal、Probability。Phase 2 起仍照 `TASKS.md`，等 Phase 1 核取清單打完再談。
+
+---
+
+## 4. 瀏覽器介面裡，模型該怎麼表現
+
+作者切到瀏覽器，是為了**用對話把作業做完**，不是換一個會直接改 repo 的實作機器人。
+
+**要做：**
+
+- 用繁體中文。語氣可以像講義：清楚、帶一點對照，不要說教。
+- 一次只盯一個作業（HW1.1 → … → HW1.5）。作者若一次丟出 Phase 2–8，請他先做完本週。
+- 解釋時用「後設／對象」兩層語言。對象記號是 `⟂ ⊤ᵢ ∼ ⋀ ⋁ ⇒`，Lean 的是 `False True ¬ ∧ ∨ →`。
+- 作者卡住時：要錯誤訊息原文、要他貼 `Formula.lean`，對照 `lession1.md` 附錄 A。可以給**片段**（例如「`and` 的回傳型別應是 `Formula α`」），不要給整份繳交檔。
+- 作業通過後，提醒作者自己把 `TASKS.md` Phase 1 的 `[ ]` 改成 `[x]`；模型若改得到文件，也可以幫打勾，但前提是驗收真的過了。
+
+**不要做：**
+
+- 不要代寫完整 `Formula.lean`／`Deduction.lean`。
+- 不要 `import Mathlib`、不要 `open Classical`。
+- 不要把對象公式做成 `Prop`，不要用 `∧` 當對象合取。
+- 不要開始寫 NJ、Kripke、FOL、模態、機率。
+- 不要把 IPC 嵌進 Lean 的 `Prop` 再證「對象 LEM ⇔ `Classical.em`」。
+- 不要依賴舊文的 `MyLogic` 與 `artifacts/mylogic/`。
+
+若瀏覽器 Grok **有**改檔工具：仍然先問「這是批改還是你要我動手」；預設是批改。若作者說「幫我改 import 大小寫」這種一行動作，可以改，那不算代寫作業。
+
+---
+
+## 5. 必須先分清的兩件事（專案主線）
 
 ### A. 待在 Lean 自己的邏輯裡，但關掉古典公理
 
-Lean 核心是 CIC／相依類型論，命題預設是直覺主義／建構式的。
+Lean 核心是 CIC。`P ∨ ¬P` 不是 kernel 公理；排中律走 `Classical.choice`。這條路是建構式數學，**不是** `mylogic` 的主線（那比較像 `mymathlib`）。
 
-- `P ∨ ¬P` **不是** kernel 公理。
-- 排中律、由矛盾直接得 `P`、選擇公理，都走 `Classical`（關鍵常數是 `Classical.choice`）。
-- Diaconescu：`propext` + `Quot.sound` + `Classical.choice` ⇒ 排中律。
-- `#print axioms foo` 可以看出一個宣告踩了哪些公理。
+### B. 把 Lean 當後設語言，編碼一套對象邏輯
 
-「不用排中律」= 不要 `open Classical`，也不要用會偷偷引入 `Classical.choice` 的 tactic（Mathlib / 部分內建 tactic 常這樣做，例如不先檢查可判定性就 `by_cases`）。
+1. 歸納型定義公式語法  
+2. 定義推導關係（本專案用 Gentzen NJ，不是 Hilbert 主線）  
+3. 定義語意（命題階段用 Kripke）  
+4. 證明後設性質：健全性、析取性質、LEM 不可證  
 
-這條路適合：在 Lean 裡做建構式數學。**不是**本 handoff 的主線。
+底層仍然是 CIC。我們沒有換 kernel。本專案走 **B**。
 
-### B. 把 Lean 當後設語言，編碼一套「對象邏輯」
-
-這才是「自建公理系統」的意思：
-
-1. 歸納型定義公式語法（對象語言）
-2. 定義推導關係（自然演繹 / sequent / Hilbert）
-3. 定義語意（賦值、Kripke、代數、機率測度……）
-4. 證明後設性質：健全性、完備性、析取性質、某公式不可證
-
-底層 **仍然是 Lean 的 CIC**（證明無關性、`Prop` 不可述性都在）。我們沒有把 kernel 換成線性邏輯或機率邏輯；我們是在 CIC **上面**研究那些系統。
-
-若目標是「整個宇宙都改成 HoTT / 線性邏輯」，那是換證明助手，不是開一個 `namespace`。
-
-本專案走 **B**。
+對象系統：先 IPC（命題 + 直覺主義 NJ），再 IQC（一階，`TASKS` Phase 8，獨立目錄 `Mylogic/FirstOrder/`）。直覺主義 = 極小邏輯 + `falsumE`；不加 LEM／RAA／DNE／Peirce。`∼φ := φ ⇒ ⟂`，`⊤ᵢ := ⟂ ⇒ ⟂`。
 
 ---
 
-## 上一輪的實質結論（濃縮）
+## 6. 設計約定（以現況為準，舊草稿作廢）
 
-- Lean 很適合當金屬語言：歸納型 + 依值型別 + typeclass 很對口。
-- 已有大型先行者：[Formalized Formal Logic / Foundation](https://github.com/FormalizedFormalLogic/Foundation)（古典／直覺主義命題與一階、超直覺主義、模態、Kripke、不完備性等）。需要時參考，不要一開始就依賴它；本專案要自己長，才寫得進科普。
-- 「現代邏輯、不用排中律」：對象邏輯用 IPC（直覺主義命題邏輯）即可；後設證明預設也盡量不踩 `Classical.choice`。
-- 「機率邏輯」要再拆三層，別跟 Mathlib 測度混為一談：
-  1. **機率理論**：測度、幾乎必然——Mathlib 已有，那是標準數學，不是另套推理規則。
-  2. **機率程式**：如 [Probly](https://github.com/lecopivo/Probly)，隨機程式 + 密度。
-  3. **機率邏輯**：對象語言加算子 `P≥r φ`（「φ 的機率至少是 r」），再給公理與模型。技術上跟模態邏輯同類；Lean 沒本質障礙，工程量大，強完備常碰到無窮規則／非緊緻。Coq 有人做過 LPP 這類系統。模糊邏輯、信念邏輯同理：`Prop` 不會自動變成 `[0,1]` 值。
+- 路徑：`mylogic/`。模組與 namespace：`Mylogic`。
+- 對象公式：`Formula α`。第一版原子用 `ℕ` 即可。
+- 對象記號（scoped）：`⟂` `⊤ᵢ` `∼` `⋀` `⋁` `⇒` `⟪p⟫`。
+- 判斷（Phase 2 才出現）：`Γ ⊢ φ`，`Γ : List (Formula α)`，不用 `Finset`。
+- 註解繁中。檔案職責小。
+- **不要** `import Mathlib`。
+- 後設也盡量建構；重要定理 `#print axioms`，預期無公理或頂多 `propext`。出現 `Classical.choice` 就停。
 
----
-
-## 務實路線（下一輪就照這個做）
-
-這是上一輪明確給出、本 handoff **必須保留**的建議：
-
-1. **先做一個很小的對象邏輯：命題語言 + 直覺主義自然演繹。**
-   - 原語連詞只要 `⟂`、`⋀`、`⋁`、`⇒`。
-   - `∼φ := φ ⇒ ⟂`，`⊤ᵢ := ⟂ ⇒ ⟂`。
-   - 對象連詞**不要**複用 Lean 的 `∧ ∨ → ¬ False`，以免後設／對象看起來像同一件事。
-   - 推導系統用 Gentzen NJ，判斷形如 `Γ ⊢ φ`，`Γ : List (Formula α)`。
-   - 這是極小邏輯 + `⟂E`（ex falso）= 直覺主義；**不要**加 RAA / LEM / double-negation elimination。
-
-2. **證明幾個後設性質：**
-   - **析取性質（disjunction property）**：若 `⊢ φ ⋁ ψ`，則 `⊢ φ` 或 `⊢ ψ`。
-   - **排中律不可證**：`⊬ p ⋁ ∼p`（對一般原子 `p`）。用 **Kripke 反模型**最乾淨：做兩世界的框架，根世界看不到 `p` 也看不到 `∼p`，原子在後繼世界才為真。
-   - 順便值得做、但可排第二優先：弱化引理（已有規則版）、cut 可容許（`Deduction.lean` 裡已有一版 `cut`）、否定引入／消除、演繹定理（跟 `→I` 幾乎是同一件事）。
-
-3. **再決定要不要加模態算子，或加 `P≥r`。**
-   - 模態：加 `□` / `◇`，Kripke 框架已經在 LEM 反模型裡用過，擴充成本低。
-   - 機率邏輯：加 `P≥r`，語意用有限樣本空間上的機率分配就夠當第一版；先健全性，完備性以後再說。
-   - 兩條都不要在 IPC 的後設性質還沒證完之前開工。
-
-4. **全程用 `#print axioms` 盯著**，確保對象邏輯的後設證明沒有意外引入 `Classical.choice`——除非你故意用古典後設理論去研究直覺主義對象邏輯（這在邏輯學裡很常見，也完全合法）。
-   - 預設政策：**後設也走建構**。析取性質的證明本身就該是建構的（給出左邊或右邊的推導）。
-   - Kripke 反模型通常也不需要選擇公理。
-   - 若某個完備性證明最後非用古典不可，把它標成 `noncomputable` / 獨立檔，並在模組註解寫明「後設古典、對象直覺主義」。
-   - 每個重要定理底下留一行：
-     ```lean
-     #print axioms disjunction_property
-     #print axioms not_provable_lem
-     ```
-     預期輸出是「does not depend on any axioms」或頂多 `propext`；出現 `Classical.choice` 就要停下來問是不是誤用 tactic。
-
----
-
-## 設計約定（請下一輪遵守）
-
-- Namespace：`MyLogic`。
-- 對象公式：`Formula α`，`α` 是命題變元的類型（第一版用 `String` 或 `ℕ` 即可）。
-- 記號（已在 `Formula.lean` 用 scoped notation）：
-  - `⟂` `⊤ᵢ` `∼` `⋀` `⋁` `⇒` `⟪p⟫`
-- 判斷記號：`Γ ⊢ φ`、`⊢ φ`（空脈絡）。
-- 脈絡用 `List`，不先上 `Finset`。重複假設可以接受；之後若要「集合脈絡」再證等價。
-- 檔案職責小、註解用中文（對齊部落格讀者）。
-- **不要**為了省事 `import Mathlib` 進來寫 IPC。標準庫 `List` / 歸納足夠。Mathlib 會把古典習慣一起帶進來。
-- Lake 專案可隨 Grok Build 補；本機目前只有 Lean 原始檔，還沒有 `lakefile` / `lean-toolchain`。
-
-後設邏輯 vs 對象邏輯，寫程式時用這張對照：
-
-| | 後設（Lean） | 對象（MyLogic） |
+| | 後設（Lean） | 對象（Mylogic） |
 |---|---|---|
-| 真 | `True` / 有證明項 | `⊤ᵢ` |
+| 真 | `True`／有證明項 | `⊤ᵢ` |
 | 假 | `False` | `⟂` |
 | 否定 | `¬` | `∼` |
 | 合取 | `∧` | `⋀` |
 | 析取 | `∨` | `⋁` |
 | 蘊涵 | `→` | `⇒` |
-| 可證 | 該 `Prop` 有項 | `⊢ φ` |
+| 可證 | 該 `Prop` 有項 | `Γ ⊢ φ`（尚未實作） |
 
 ---
 
-## 建議的檔案切分（Grok Build 按這個長）
+## 7. 中期路線（Phase 1 過關之後才走）
 
-已有：
+不要在瀏覽器第一輪就開工。記在這裡以免路線走丟：
 
-```
-artifacts/mylogic/
-  MyLogic.lean              -- 總入口（目前 import 了還不存在的模組，見下）
-  MyLogic/Formula.lean      -- 公式 + 記號
-  MyLogic/Deduction.lean    -- NJ 規則 + 幾個導出規則
-```
+1. Phase 2：NJ，constructor 名稱與規格第 6 節一致（`ax`、`weaken`、`andI`／`andEL`／`andER`、`orIL`／`orIR`／`orE`、`impI`／`impE`、`falsumE`）。
+2. Phase 3：對象小定理 `⊢ φ ⇒ φ`、合取交換、雙重否定**引入**（消除不可證，不要硬證）。
+3. Phase 4–7：後設弱化、Kripke 健全性、兩世界 LEM 反模型、`#print axioms`。析取性質可稍後。
+4. Phase 8：一階，獨立模組，代入傾向 de Bruijn。
+5. 模態 `□`／`◇` 或機率 `P≥r`：等 IPC 後設過關再決定。機率邏輯 ≠ Mathlib 測度論。
 
-下一輪依序補：
-
-```
-MyLogic/Examples.lean       -- 小定理：φ ⇒ φ、φ ⋀ ψ ⇒ ψ ⋀ φ、雙重否定引入（注意：消除不可證）
-MyLogic/Meta.lean           -- 後設定理：弱化／換脈絡、析取性質
-MyLogic/Kripke.lean         -- 世界、強制關係 ⊩、單調性、健全性
-MyLogic/Countermodel.lean   -- LEM 的兩世界反模型；可再加雙重否定消除的反模型
-MyLogic/PrintAxioms.lean    -- 集中 #print axioms，當回歸檢查
-```
-
-再後面（明確決定後才開）：
-
-```
-MyLogic/Modal.lean          -- □、K 公理、框架條件
-MyLogic/Probability.lean    -- P≥r 語法；有限分配語意
-MyLogic/FirstOrder.lean     -- 現在 root 有 import，但檔案不存在；先不要做
-MyLogic/Exercises.lean      -- 同樣，root 有 import、檔案不存在
-```
+全程盯 `Classical.choice`。析取性質必須建構地給出左邊或右邊的推導。
 
 ---
 
-## 目前程式狀態（2026-09-09 實查）
+## 8. 刻意先不做
 
-`Formula.lean` 已完成第一版語法與記號。
-
-`Deduction.lean` 已有 NJ 規則：
-
-- `ax`、`weaken`
-- `andI` / `andEL` / `andER`
-- `orIL` / `orIR` / `orE`
-- `impI` / `impE`
-- `falsumE`
-- 導出：`negI`、`negE`、`verumI`、`ax_head`、`ax_tail_head`、`weaken_list`、`cut`
-
-**缺口 / 地雷：**
-
-- `MyLogic.lean` 寫了 `import MyLogic.Examples`、`Exercises`、`FirstOrder`，這三個檔**不存在**。下一輪第一件事：要嘛建空模組，要嘛先把這三行 import 拿掉，否則 lake build 會掛。
-- 還沒有語意、還沒有析取性質、還沒有 Kripke、還沒有 `#print axioms` 檢查。
-- 還沒有 Lake 專案檔。Grok Build 若要編譯，需補 `lean-toolchain`、`lakefile.toml`（或 `.lean`），**不要依賴 Mathlib**。
-- `cut` 目前用 `impI` + `impE` 證，這對 NJ 沒問題；若之後改 sequent 再另證容許性。
+- 代寫 Phase 1 繳交檔。
+- 把 IPC 嵌進 `Prop` 當主線。
+- 在預設 NJ 加入 `Classical.em` 的翻譯（對照請另開 `Mylogic.Classical`，現在不開）。
+- Gödel、Hauptsatz、FOL 實作、Mathlib 測度、模態、機率。
 
 ---
 
-## Grok Build 建議的第一個工作單元
+## 9. 歷史草稿（不要當現況）
 
-不要一次做完。建議一個 session 只做這一包，而且要能 `lake build`：
+更早的本機實驗曾有 `artifacts/mylogic/`，裡面有過 `Formula.lean`／`Deduction.lean` 與一組 NJ 規則。那些檔**沒有**搬進這個 Lake 專案。舊 handoff 裡的 `MyLogic`、幽靈 `import MyLogic.Examples`、以及「尚未有 lakefile」，都已過時。
 
-1. 修好 root import（刪掉不存在的模組，或放空 `namespace` 檔）。
-2. 補最小 Lake 專案（無 Mathlib）。
-3. `Examples.lean`：至少三個對象定理
-   - `⊢ φ ⇒ φ`
-   - `⊢ (φ ⋀ ψ) ⇒ (ψ ⋀ φ)`
-   - `⊢ φ ⇒ ∼∼φ`（雙重否定引入；消除刻意不要證）
-4. `Kripke.lean` 最小定義：
-   - 結構：世界型、前序 `≤`、原子賦值（對 `≤` 單調）
-   - 強制 `forces W φ`（對公式歸納）
-   - 單調性引理
-   - 健全性：`Γ ⊢ φ` ⇒ 所有世界、所有把 Γ 強制住的賦值都強制 φ
-5. `Countermodel.lean`：兩個世界 `w₀ ≤ w₁`，原子 `p` 只在 `w₁` 真。證明
-   - `w₀ ⊮ p`、`w₀ ⊮ ∼p`、因此 `w₀ ⊮ p ⋁ ∼p`
-   - 由健全性得 `⊬ p ⋁ ∼p`
-6. 每個新定理後 `#print axioms`。
-7. 析取性質可放同一 session 或下一個；它比較像對推導做歸納，不依賴 Kripke。
-
-完成後在本檔「目前程式狀態」更新，並在定理旁用一句中文寫「這在講後設還是對象」。
+若需要邏輯細節，讀 [`first-order-logic.md`](first-order-logic.md)，不要從舊草稿反推這個 repo。
 
 ---
 
-## 刻意先不做的事
+## 10. 對外參考（需要時再打開）
 
-- 不要把 IPC 嵌進 `Prop` 再「證明對象排中律等價 Lean 排中律」當主線——那會讓讀者以為兩層邏輯是同一個。
-- 不要一開始就形式化 Gödel 不完備、切割消除的完整 Hauptsatz、或 FOL。
-- 不要為了機率邏輯先引 Mathlib 測度論。
-- 不要在對象系統裡加入 `Classical.em` 的翻譯當公理，除非另開 `MyLogic.Classical` 做對照。
-
----
-
-## 對外參考（需要時再打開）
-
-- Lean 古典推理：https://leanprover.github.io/theorem_proving_in_lean4/Propositions-and-Proofs/
-- Axioms and Computation：https://leanprover.github.io/theorem_proving_in_lean4/Axioms-and-Computation/
-- Formalized Formal Logic：https://formalizedformallogic.github.io/Foundation/
-- Lean 做建構式數學的限制討論：https://proofassistants.stackexchange.com/questions/1115/how-usable-is-lean-for-constructive-mathematics
+- Lean 公理與計算：https://leanprover.github.io/theorem_proving_in_lean4/Axioms-and-Computation/
+- Formalized Formal Logic（只參考、不依賴）：https://formalizedformallogic.github.io/Foundation/
+- Day 0 環境：https://njiot.blogspot.com/2026/09/lean-day-0-20260906.html
+- Day 1 畢氏定理（`mymathlib` 那條線）：https://njiot.blogspot.com/2026/09/ 與 https://njscientia.blogspot.com/2026/09/blog-post.html
 
 ---
 
-## 給下一輪模型的一句話
+## 11. 作者可貼到瀏覽器的開場白
 
-> 在 `artifacts/mylogic` 把直覺主義命題邏輯當對象語言做完：NJ + Kripke 健全性 + LEM 反模型 + `#print axioms` 乾淨。模態與 `P≥r` 等這包過關再談。
+```
+我在 GitHub repo lean_study 的 mylogic/ 用 Lean 4 自建對象邏輯（後設是 Lean，對象是直覺主義命題邏輯）。
+
+請先讀 mylogic/docs/handoff.md。重點：
+- Phase 0 已完成（lake exe 原本印 Hello, world!）。
+- Phase 1 請當大學教授／助教：講義是 mylogic/docs/lession1.md。
+- 我自己依 HW1.1→HW1.5 寫 Mylogic/Formula.lean，請批改、答疑，不要代寫完整檔。
+- 模組名是 Mylogic（不是 MyLogic），不要 import Mathlib。
+- 檔名 lession1.md 不要改。
+
+我現在做到 HW1.__ ；這是我的 Formula.lean／錯誤訊息：
+```
+
+（作者自己填作業號與貼檔。）
+
+---
+
+## 12. 給下一輪模型的一句話
+
+> 作者改在瀏覽器做 Phase 1。`lession1.md` 存在，是因為他要自己學會把公式做成歸納型，不是要一份代寫的 `Formula.lean`。你當教授：對作業、講兩層語言、盯 `Mylogic` 這個拼法。五份作業過了再談 NJ。

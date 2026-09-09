@@ -1,7 +1,7 @@
 # AGENTS：在 `mylogic` 裡思考與實作時先看這裡
 
-> 給下一個 session 的模型與作者。短、可執行。
-> 邏輯規格在 [`first-order-logic.md`](first-order-logic.md)；Lean 課綱在 [`TASKS.md`](TASKS.md)；緣由在 [`handoff.md`](handoff.md)。
+> 給下一個 session 的模型與作者。短、可執行。作者接下來改在**瀏覽器**溝通。
+> 完整交接在 [`handoff.md`](handoff.md)。Phase 1 講義：[`lession1.md`](lession1.md)（檔名依作者指定，不要改）。
 > 日期：2026-09-09。
 
 ---
@@ -10,7 +10,7 @@
 
 `mylogic` 用 Lean 4 當**後設語言**，編碼一套**對象邏輯**：先做直覺主義命題邏輯（IPC + Gentzen NJ），再做直覺主義一階邏輯（IQC）。這不是在 Lean 的 `Prop` 裡做建構式數學（那是 `mymathlib` 的路線）。
 
-讀檔順序：`handoff.md` → `first-order-logic.md` → `TASKS.md` → 本檔。
+讀檔順序：[`handoff.md`](handoff.md)（必讀，含「為何有 lession1.md」與瀏覽器角色）→ Phase 1 則 [`lession1.md`](lession1.md) → 本檔。規格與全課綱不必一開場就讀完。
 
 ---
 
@@ -19,7 +19,7 @@
 1. **不要 `import Mathlib`。** 標準庫的 `List`、歸納、結構就夠。Mathlib 會把古典 tactic 習慣一起帶進來。
 2. **兩套記號必須分開。** 對象連詞是 `⟂` `⊤ᵢ` `∼` `⋀` `⋁` `⇒`；後設用 Lean 的 `False` `True` `¬` `∧` `∨` `→`。不要把對象公式定義成 Lean 的 `Prop` 連詞。
 3. **對象系統是直覺主義 NJ。** 不加 LEM、RAA（從 `∼φ ⊢ ⟂` 得 `φ`）、雙重否定消除、Peirce。`falsumE`（ex falso）要加，那是直覺主義與極小邏輯的分界。
-4. **模組與 namespace 用 `Mylogic`**（Lake `lake new mylogic` 的預設），不是 handoff 寫的 `MyLogic`。
+4. **模組與 namespace 用 `Mylogic`**（Lake `lake new mylogic` 的預設），不是舊草稿的 `MyLogic`。`import MyLogic.Formula` 是錯的。
 5. **脈絡用 `List (Formula α)`**，不用 `Finset`。重複假設可接受。
 6. **註解用繁體中文。** 每個重要定理旁寫一句：這是對象定理還是後設定理。
 7. **後設也盡量建構。** 重要定理底下 `#print axioms`。預期不依賴任何公理，或頂多 `propext`。出現 `Classical.choice` 就停：是誤用 tactic，還是故意走古典後設？後者要獨立檔並在模組註解寫明。
@@ -42,18 +42,17 @@
 
 ---
 
-## 與 `handoff.md` 的偏差（刻意的）
+## 與舊草稿的偏差（已寫進 `handoff.md`）
 
-handoff 是上一輪的交接，以下幾點以本檔與課綱為準：
+`handoff.md` 已於 2026-09-09 改寫成給**瀏覽器介面**的交接。下列以現況為準，不要再被更早的 `artifacts/mylogic` 文案帶跑：
 
-| 項目 | handoff | 現在 |
+| 項目 | 舊草稿／舊 handoff | 現在 |
 |---|---|---|
-| 路徑 | `artifacts/mylogic/` | repo 內 `mylogic/`（已 `lake new`） |
-| 模組名 | `MyLogic` | `Mylogic` |
-| FOL | 「root 有 import 但先不要做」 | 規格寫在 `first-order-logic.md`；實作是 `TASKS.md` Phase 8，**插在 Phase 1–7 之前就做錯** |
-| 程式狀態 | 宣稱已有 `Formula.lean` / `Deduction.lean` | **尚未搬進這個 Lake 專案**；現在只有模板 `hello` |
-
-不要把 handoff 裡的「目前程式狀態」當成這個目錄已經有那些檔。
+| 對話介面 | Grok Build TUI 接著實作 | 作者改在瀏覽器與 Grok 溝通；模型預設**批改**，不代寫 |
+| 路徑 | `artifacts/mylogic/` | repo 內 `mylogic/` |
+| 模組名 | `MyLogic` | `Mylogic`（`import MyLogic.Formula` 會讓 build 掛掉） |
+| Phase 1 作法 | 直接寫 `Formula.lean` | 講義 [`lession1.md`](lession1.md)，作者做 HW1.1–1.5 |
+| FOL | 舊 root 曾幽靈 import | 規格在 `first-order-logic.md`；實作 Phase 8，**插在 1–7 之前就做錯** |
 
 ---
 
@@ -63,6 +62,7 @@ handoff 是上一輪的交接，以下幾點以本檔與課綱為準：
 - 後設定理組不出來：對 `Deduction` 或 `Formula` 做歸納，不要對公式的「真假」做個案。
 - 要證明「證不出來」：做 Kripke 反模型 + 健全性。**不要**在對象系統裡加一條公理然後宣稱不可證——那是換系統。
 - 析取性質必須是建構的：給出左邊或右邊的推導，不要用 Lean 的排中律「總有一邊可證」。
+- Phase 1 作者在寫作業：看 [`lession1.md`](lession1.md) 附錄 A，不要直接給完整 `Formula.lean`。
 - FOL 代入爆炸：停下來看 Phase 8 的 de Bruijn 建議，不要在命題 `Formula` 上硬加量詞。
 - `#print axioms` 出現 `Classical.choice`：先搜這個檔有沒有 `by_cases`、`Classical.*`、或 Mathlib tactic。
 
@@ -78,6 +78,10 @@ handoff 是上一輪的交接，以下幾點以本檔與課綱為準：
 6. **等號、模態、機率邏輯、古典對照**都不進第一條學習路徑。
 7. **完備性不當 Phase 1–7 目標。** 第一階段用有限反模型證明不可證；完備性以後再說，若非古典後設不可則獨立標註。
 8. **文件名 `AGENTS.md`**（不是 `AGENtS.md`）。
+9. **Phase 1 講義檔名 `lession1.md`**（作者指定的拼寫，不要擅自改成 `lesson1.md`）。
+10. **Phase 0 完成（2026-09-09）。** 保留 `hello` 模板。下一件實作是作者自己做 `lession1.md` 的作業，不是模型直接寫 `Formula.lean`。
+11. **`lession1.md` 的存在理由。** 作者要求 Phase 1 當大學課：講義 + 作業自寫，不要代工。詳見 [`handoff.md`](handoff.md) 第 1 節。
+12. **離開 TUI 時的 WIP（同日）。** `Formula.lean` 幾乎是空註解；`Mylogic.lean` 誤寫 `import MyLogic.Formula`（大小寫），build 因此紅。提示拼法即可，不要順便把歸納型寫完。
 
 ---
 
@@ -114,7 +118,7 @@ Mylogic/Classical.lean
 Mylogic/FirstOrder.lean   -- 不要在 root 空 import
 ```
 
-Lake 模板的 `Mylogic/Basic.lean`（`hello`）與 `Main.lean` 在 Phase 0 處理：主入口不要依賴不存在的模組。
+Lake 模板的 `Mylogic/Basic.lean`（`hello`）與 `Main.lean` **Phase 0 已處理完**：保留模板；主入口不要依賴不存在的模組。Phase 1 才新增 `Mylogic/Formula.lean`。
 
 ---
 
@@ -135,4 +139,4 @@ Lake 模板的 `Mylogic/Basic.lean`（`hello`）與 `Main.lean` 在 Phase 0 處�
 
 ## 下一 session 開工指令
 
-若目標是開始寫 Lean：從 [`TASKS.md`](TASKS.md) 的 **Phase 0** 做起，做完一個 phase 就 `lake build`，不要一次做完 IPC。若目標是改邏輯規格：先改 `first-order-logic.md`，再改 TASKS，最後才動程式。
+作者改在**瀏覽器**繼續。先讀 [`handoff.md`](handoff.md) 第 0–4 節。Phase 1：指向 [`lession1.md`](lession1.md)，**批改或答疑，不要代寫 `Formula.lean`**。若 build 紅，先查 `import Mylogic.Formula` 的拼法。作業全部通過後，再把 [`TASKS.md`](TASKS.md) Phase 1 核取清單打勾。若目標是改邏輯規格：先改 `first-order-logic.md`，再改 TASKS／講義，最後才動程式。
