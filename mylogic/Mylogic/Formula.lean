@@ -9,8 +9,8 @@ namespace Mylogic
 
 /-
  *  Formula 資料樹
- *      Formula Nat : 原子是自然數的公理式
- *      Formula String : 原子是字串的公理式
+ *      Formula Nat : 原子是自然數的公式
+ *      Formula String : 原子是字串的公式
 -/
 inductive Formula (a : Type) where
   -- atom 原子 - 葉子
@@ -21,7 +21,7 @@ inductive Formula (a : Type) where
   | and : Formula a → Formula a → Formula a
   -- or 析取 - 兩個子樹 - 選一邊交出證明
   | or : Formula a → Formula a → Formula a
-  -- imp 蕴含 - 兩個子樹 - 把證明變成證明
+  -- imp 蘊涵 - 兩個子樹 - 把證明變成證明
   | imp : Formula a → Formula a → Formula a
 
 
