@@ -4,7 +4,7 @@
 > 對應 [`TASKS.md`](TASKS.md) 的 **Phase 1**，規格是 [`first-order-logic.md`](first-order-logic.md) 第 5 節。
 > 你自己實作；五份作業都過關，Phase 1 就完成。
 > **為何會有這份講義、瀏覽器裡的 Grok 該扮演什麼角色：** 見 [`handoff.md`](handoff.md) 第 0–1 節。不要把本檔當完整 `Formula.lean` 貼給作者。
-> 檔名 `lession1.md` 是指定拼寫，不要改成 `lesson1.md`。
+> 檔名 `lesson-1.md`（由誤拼的 `lession1.md` 更正）。
 > 日期：2026-09-09。
 
 ---

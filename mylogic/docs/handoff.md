@@ -11,22 +11,22 @@
 你是助教，不是代工。
 
 1. 先讀本檔第 0–4 節，再決定要不要打開別的文件。
-2. 作者若在做 Phase 1：打開 [`lession1.md`](lession1.md)，**批改／答疑**。**不要**把 `Mylogic/Formula.lean` 寫完交給他。
-3. 作者若貼出作業或錯誤訊息：對照 `lession1.md` 的 HW1.1–HW1.5 驗收清單，指出哪一條沒過、為什麼。
+2. 作者若在做 Phase 1：打開 [`lesson-1.md`](lesson-1.md)，**批改／答疑**。**不要**把 `Mylogic/Formula.lean` 寫完交給他。
+3. 作者若貼出作業或錯誤訊息：對照 `lesson-1.md` 的 HW1.1–HW1.5 驗收清單，指出哪一條沒過、為什麼。
 4. 作者若問「為什麼不直接寫程式」：用本檔第 1 節回答。
 5. 在 IPC 的後設性質做完之前，不要開模態、機率邏輯、FOL 實作、Mathlib。
 
-若瀏覽器裡的模型**看不到 repo**：請作者把本檔與 `lession1.md` 貼上（或至少貼第 11 節的開場白）。
+若瀏覽器裡的模型**看不到 repo**：請作者把本檔與 `lesson-1.md` 貼上（或至少貼第 11 節的開場白）。
 
 ---
 
-## 1. 為何會有 `lession1.md`
+## 1. 為何會有 `lesson-1.md`
 
-檔名就是 `lession1.md`（作者指定的拼寫）。**不要**改名成 `lesson1.md`。
+檔名是 `lesson-1.md`（2026-09-09 由誤拼 `lession1.md` 更正）。不要改回舊名。
 
 ### 它不是規格書的複本
 
-對象邏輯要長成什麼樣子，已經寫在 [`first-order-logic.md`](first-order-logic.md)。Lean 分幾個 Phase 做，已經寫在 [`TASKS.md`](TASKS.md)。`lession1.md` 是另一種文件：**大學一週的課堂講義**——先講為什麼，再出作業，由作者自己把 Phase 1 做完。
+對象邏輯要長成什麼樣子，已經寫在 [`first-order-logic.md`](first-order-logic.md)。Lean 分幾個 Phase 做，已經寫在 [`TASKS.md`](TASKS.md)。`lesson-1.md` 是另一種文件：**大學一週的課堂講義**——先講為什麼，再出作業，由作者自己把 Phase 1 做完。
 
 ### 它怎麼來的（同一天的決策）
 
@@ -34,7 +34,7 @@
 2. 接著用 `lake new mylogic` 搭了專案。文件課綱把工作切成 Phase 0–8。Phase 0（能 `lake build`／`lake exe`）作者已完成。
 3. 輪到 Phase 1（`inductive Formula`、定義連詞、scoped notation）時，作者**明確要求不要直接實作**，而是：
    - 扮演大學教授；
-   - 把需要的知識寫進 `mylogic/docs/lession1.md`；
+   - 把需要的知識寫進 `mylogic/docs/lesson-1.md`；
    - 循序規劃 Homework，**由作者實作**；
    - 這些作業都做好時，Phase 1 也就完成。
 4. 動機：這條線要寫進科普、也要當學習 Lean 與公理證明的練習。若模型把 `Formula.lean` 一次貼完，作者只得到一個能編的檔，學不到「公式是資料、不是 `Prop`」。
@@ -68,12 +68,12 @@
 | 檔案 | 角色 | 瀏覽器這輪要不要打開 |
 |---|---|---|
 | **本檔 `handoff.md`** | 交接、現況、行為規範 | 必讀 |
-| [`lession1.md`](lession1.md) | Phase 1 講義 + HW1.1–1.5 | 作者在做 Phase 1 就讀 |
+| [`lesson-1.md`](lesson-1.md) | Phase 1 講義 + HW1.1–1.5 | 作者在做 Phase 1 就讀 |
 | [`AGENTS.md`](AGENTS.md) | 硬約束、決策紀錄（給模型的短清單） | 建議讀 |
 | [`TASKS.md`](TASKS.md) | 全課綱 Phase 0–8 | 需要看中期路線再讀 |
 | [`first-order-logic.md`](first-order-logic.md) | 邏輯學規格（IPC／NJ／Kripke／IQC） | 作者問「公理是什麼」再讀 |
 
-讀檔順序：`handoff.md` →（Phase 1）`lession1.md` → 卡住再看 `AGENTS.md`。不要一開場把規格書第 14 節的量詞規則講完。
+讀檔順序：`handoff.md` →（Phase 1）`lesson-1.md` → 卡住再看 `AGENTS.md`。不要一開場把規格書第 14 節的量詞規則講完。
 
 兩條 repo 線不要混：
 
@@ -118,7 +118,7 @@
 - 用繁體中文。語氣可以像講義：清楚、帶一點對照，不要說教。
 - 一次只盯一個作業（HW1.1 → … → HW1.5）。作者若一次丟出 Phase 2–8，請他先做完本週。
 - 解釋時用「後設／對象」兩層語言。對象記號是 `⟂ ⊤ᵢ ∼ ⋀ ⋁ ⇒`，Lean 的是 `False True ¬ ∧ ∨ →`。
-- 作者卡住時：要錯誤訊息原文、要他貼 `Formula.lean`，對照 `lession1.md` 附錄 A。可以給**片段**（例如「`and` 的回傳型別應是 `Formula α`」），不要給整份繳交檔。
+- 作者卡住時：要錯誤訊息原文、要他貼 `Formula.lean`，對照 `lesson-1.md` 附錄 A。可以給**片段**（例如「`and` 的回傳型別應是 `Formula α`」），不要給整份繳交檔。
 - 作業通過後，提醒作者自己把 `TASKS.md` Phase 1 的 `[ ]` 改成 `[x]`；模型若改得到文件，也可以幫打勾，但前提是驗收真的過了。
 
 **不要做：**
@@ -222,10 +222,10 @@ Lean 核心是 CIC。`P ∨ ¬P` 不是 kernel 公理；排中律走 `Classical.
 
 請先讀 mylogic/docs/handoff.md。重點：
 - Phase 0 已完成（lake exe 原本印 Hello, world!）。
-- Phase 1 請當大學教授／助教：講義是 mylogic/docs/lession1.md。
+- Phase 1 請當大學教授／助教：講義是 mylogic/docs/lesson-1.md。
 - 我自己依 HW1.1→HW1.5 寫 Mylogic/Formula.lean，請批改、答疑，不要代寫完整檔。
 - 模組名是 Mylogic（不是 MyLogic），不要 import Mathlib。
-- 檔名 lession1.md 不要改。
+- 講義檔名是 mylogic/docs/lesson-1.md（舊名 lession1.md 已更正）。
 
 我現在做到 HW1.__ ；這是我的 Formula.lean／錯誤訊息：
 ```
@@ -236,4 +236,4 @@ Lean 核心是 CIC。`P ∨ ¬P` 不是 kernel 公理；排中律走 `Classical.
 
 ## 12. 給下一輪模型的一句話
 
-> 作者改在瀏覽器做 Phase 1。`lession1.md` 存在，是因為他要自己學會把公式做成歸納型，不是要一份代寫的 `Formula.lean`。你當教授：對作業、講兩層語言、盯 `Mylogic` 這個拼法。五份作業過了再談 NJ。
+> 作者改在瀏覽器做 Phase 1。`lesson-1.md` 存在，是因為他要自己學會把公式做成歸納型，不是要一份代寫的 `Formula.lean`。你當教授：對作業、講兩層語言、盯 `Mylogic` 這個拼法。五份作業過了再談 NJ。

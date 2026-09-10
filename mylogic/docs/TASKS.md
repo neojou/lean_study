@@ -2,7 +2,7 @@
 
 > 這不是一次做完的工單。每個 Phase 結束都要能 `lake build`。
 > 邏輯規格：[`first-order-logic.md`](first-order-logic.md)。硬約束：[`AGENTS.md`](AGENTS.md)。緣由：[`handoff.md`](handoff.md)。
-> Phase 1 講義：[`lession1.md`](lession1.md)。**Phase 0 已完成。**
+> Phase 1 講義：[`lesson-1.md`](lesson-1.md)。**Phase 0 已完成。**
 > 下一輪在瀏覽器：讀 [`handoff.md`](handoff.md)（含為何有講義、模型當助教不代寫）。
 > 日期：2026-09-09。
 
@@ -18,7 +18,7 @@
 - 模組名是 `Mylogic`（Lake 預設），不是舊草稿的 `MyLogic`。
 - 規則名稱必須與規格書第 6、14 節一致。
 
-核對進度時，把 `[ ]` 改成 `[x]`。Phase 1 請先做完 `lession1.md` 的作業再打勾。
+核對進度時，把 `[ ]` 改成 `[x]`。Phase 1 請先做完 `lesson-1.md` 的作業再打勾。
 
 ---
 
@@ -69,7 +69,7 @@
 
 ## Phase 1 — 命題語法
 
-**狀態：進行中（講義已出，作者剛起頭）。** 為何用講義而不是代寫：見 [`handoff.md`](handoff.md) 第 1 節。不要一次貼完整 `Formula.lean`。讀 [`lession1.md`](lession1.md)，依序繳交 HW1.1–HW1.5；五份作業都通過時，本 Phase 的核取清單一併打勾。
+**狀態：進行中（講義已出，作者剛起頭）。** 為何用講義而不是代寫：見 [`handoff.md`](handoff.md) 第 1 節。不要一次貼完整 `Formula.lean`。讀 [`lesson-1.md`](lesson-1.md)，依序繳交 HW1.1–HW1.5；五份作業都通過時，本 Phase 的核取清單一併打勾。
 
 離開 TUI 時的 WIP：`Mylogic/Formula.lean` 幾乎是空註解（HW1.1 的 inductive 尚未寫）；`Mylogic.lean` 有一行錯誤的 `import MyLogic.Formula`（應為 `Mylogic.Formula`），會讓 `lake build` 失敗。這是拼法問題，不是叫模型把 Phase 1 做完。
 
@@ -77,7 +77,7 @@
 
 **檔案。** `Mylogic/Formula.lean`，由 `Mylogic.lean` import。
 
-**講義。** [`lession1.md`](lession1.md)（大學課堂：知識 + 循序作業）。規格仍以 `first-order-logic.md` 第 5 節為準。
+**講義。** [`lesson-1.md`](lesson-1.md)（大學課堂：知識 + 循序作業）。規格仍以 `first-order-logic.md` 第 5 節為準。
 
 **要練的 Lean。**
 
@@ -106,7 +106,7 @@ def Formula.verum : Formula α := Formula.falsum.imp .falsum
 
 記號（scoped，對齊規格）：`⟂` `⊤ᵢ` `∼` `⋀` `⋁` `⇒` `⟪p⟫`。
 
-**要做**（對應 [`lession1.md`](lession1.md) 作業；作者打勾，模型不要代寫）。
+**要做**（對應 [`lesson-1.md`](lesson-1.md) 作業；作者打勾，模型不要代寫）。
 
 - [ ] `Formula` 五個 constructor，沒有 `neg` constructor。（HW1.1）
 - [ ] `∼φ := φ ⇒ ⟂`、`⊤ᵢ := ⟂ ⇒ ⟂`。（HW1.2）
@@ -487,7 +487,7 @@ forces f w (φ ⇒ ψ)  :=
 | Session | 做什麼 | 結束時你學會 |
 |---|---|---|
 | 0 | Phase 0 | Lake 專案能編、能跑（**已完成**） |
-| 1 | Phase 1（[`lession1.md`](lession1.md) 作業） | 歸納型、定義連詞、scoped notation |
+| 1 | Phase 1（[`lesson-1.md`](lesson-1.md) 作業） | 歸納型、定義連詞、scoped notation |
 | 2 | Phase 2 | 歸納謂詞 `Γ ⊢ φ` |
 | 3 | Phase 3 | 用 constructor 組對象證明 |
 | 4 | Phase 4a + 5 | 後設歸納 + 結構／遞迴 |
@@ -519,7 +519,7 @@ mylogic/
     first-order-logic.md
     TASKS.md
     AGENTS.md
-    lession1.md              -- Phase 1 講義與作業（檔名依作者指定）
+    lesson-1.md              -- Phase 1 講義與作業（由 lession1.md 更正）
 ```
 
 `Mylogic/Basic.lean`（hello）可刪可留；不要讓它成為邏輯入口。
@@ -530,4 +530,4 @@ Phase 8 之後再多 `Mylogic/FirstOrder/`。
 
 ## 下一 session 的第一句話
 
-作者改在瀏覽器繼續 Phase 1。讀 [`handoff.md`](handoff.md) 與 [`lession1.md`](lession1.md)，由作者依 HW1.1 → HW1.5 實作 `Formula.lean`。**不要代寫 Phase 1。** 不要先寫 Kripke，也不要先寫 FOL。
+作者改在瀏覽器繼續 Phase 1。讀 [`handoff.md`](handoff.md) 與 [`lesson-1.md`](lesson-1.md)，由作者依 HW1.1 → HW1.5 實作 `Formula.lean`。**不要代寫 Phase 1。** 不要先寫 Kripke，也不要先寫 FOL。
