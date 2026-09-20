@@ -46,7 +46,7 @@ variable {a : Type}
 /-
   * 定義 - 對象否定：∼b := b ⇒ ⟂
   *  節點 : imp 蘊涵
-  *  左子樹 : 原子 b : Formula a
+  *  左子樹 : 公式 b : Formula a
   *  右子樹 : falsum 荒謬
 -/
 def Formula.neg (b : Formula a) : Formula a :=
