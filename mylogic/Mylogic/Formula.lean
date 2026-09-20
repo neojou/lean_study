@@ -61,13 +61,13 @@ def Formula.neg (b : Formula a) : Formula a :=
 def Formula.verum : Formula a :=
     Formula.imp Formula.falsum Formula.falsum
 
--- ∼p（應等於 p ⇒ ⟂）
+-- ∼p
 def ex4 : Formula Nat :=
-  Formula.imp (Formula.neg (Formula.atom 0)) (Formula.imp (Formula.atom 0) Formula.falsum)
+  Formula.neg (Formula.atom 0)
 
--- ⊤ᵢ（應等於 ⟂ ⇒ ⟂）
+-- ⊤ᵢ
 def ex5 : Formula Nat :=
-  Formula.imp (Formula.verum : Formula Nat) (Formula.imp Formula.falsum Formula.falsum)
+  Formula.verum
 
 example (b : Formula Nat) : Formula.neg b = Formula.imp b Formula.falsum := rfl
 example : (Formula.verum : Formula Nat) = Formula.imp Formula.falsum Formula.falsum := rfl
