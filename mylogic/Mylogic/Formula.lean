@@ -94,7 +94,7 @@ def ex7 : Formula Nat :=
 
 -- p ⇒ (q ⋁ ⟂) (令 p = 0、q = 1）
 def ex8 : Formula Nat :=
-  ⟪0⟫ ⇒ ( ⟪0⟫ ⋁ ⟂ )
+  ⟪0⟫ ⇒ ⟪1⟫ ⋁ ⟂
 
 example : (⟪0⟫ ⋀ ⟪1⟫ ⇒ ⟪2⟫) =
     Formula.imp (Formula.and (.atom 0) (.atom 1)) (.atom 2) := rfl
