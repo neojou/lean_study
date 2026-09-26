@@ -25,6 +25,7 @@ inductive Formula (a : Type) where
   | or : Formula a → Formula a → Formula a
   -- imp 蘊涵 - 兩個子樹 - 把證明變成證明
   | imp : Formula a → Formula a → Formula a
+  deriving Repr, DecidableEq
 
 -- p ⋀ q（令 p = 0、q = 1）
 def ex1 : Formula Nat
@@ -110,5 +111,30 @@ example : (∼∼⟪0⟫) =
 
 example : Formula Nat := ⟪0⟫ ⋀ ∼⟪0⟫
 
+-- *** HW 1.4 ***
+
+/-- 原語節點數。atom、falsum 各算 1；二元連詞算 1 + 兩邊。 -/
+def Formula.size {t : Type} : Formula t -> Nat
+  | .atom _ => 1
+  | .falsum => 1
+  | .and a b => 1 + Formula.size a + Formula.size b
+  | .or a b => 1 + Formula.size a + Formula.size b
+  | .imp a b => 1 + Formula.size a + Formula.size b
+
+
+-- ⟪0⟫ 的 size 是 1
+example : Formula.size ⟪0⟫ = 1 := rfl
+
+-- ⟂ 的 size 是 1
+example : Formula.size (⟂ : Formula Nat) = 1 := rfl
+
+-- ⟪0⟫ ⋀ ⟪1⟫ 的 size 是 3
+example : Formula.size ( ⟪0⟫ ⋀ ⟪1⟫ : Formula Nat) = 3 := rfl
+
+-- ∼⟪0⟫ 的 size 是 3（因為它是 imp + atom + falsum）
+example : Formula.size ( ∼⟪0⟫ : Formula Nat) = 3 := rfl
+
+-- ⊤ᵢ 的 size 是 3
+example : Formula.size ( ⊤ᵢ : Formula Nat) = 3 := rfl
 
 end Mylogic
