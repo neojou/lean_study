@@ -2,8 +2,8 @@
 
 > 這不是一次做完的工單。每個 Phase 結束都要能 `lake build`。
 > 邏輯規格：[`first-order-logic.md`](first-order-logic.md)。硬約束：[`AGENTS.md`](AGENTS.md)。緣由：[`handoff.md`](handoff.md)。
-> Phase 1 講義：[`lesson-1.md`](lesson-1.md)。**Phase 0 已完成。**
-> 下一輪在瀏覽器：讀 [`handoff.md`](handoff.md)（含為何有講義、模型當助教不代寫）。
+> Phase 1 講義：[`lesson-1.md`](lesson-1.md)。Phase 2 講義：[`lesson-2.md`](lesson-2.md)。**Phase 0 已完成。**
+> 下一輪在瀏覽器：讀 [`handoff.md`](handoff.md)。模型當助教，不代寫作業。
 > 日期：2026-09-09。
 
 ---
@@ -128,9 +128,13 @@ def Formula.verum : Formula α := Formula.falsum.imp .falsum
 
 ## Phase 2 — NJ 推導關係
 
+**狀態：講義已出，程式由作者實作。** 讀 [`lesson-2.md`](lesson-2.md)，依序繳交 HW2.1–HW2.5；五份都通過時，本節核取清單一併打勾。不要一次貼完整 `Deduction.lean`。
+
 **目標。** `Γ ⊢ φ` 是歸納謂詞。規則與規格書第 6 節同名。
 
 **檔案。** `Mylogic/Deduction.lean`。
+
+**講義。** [`lesson-2.md`](lesson-2.md)。規格仍以 `first-order-logic.md` 第 6–7 節為準。作者的 `Formula` 型別參數名是 `a`，作業跟著 `a`，不必改回 `α`。
 
 **要練的 Lean。**
 
@@ -164,13 +168,13 @@ def Formula.verum : Formula α := Formula.falsum.imp .falsum
 - [ ] `weaken_list`：前面加一整列
 - [ ] `cut`：`Γ ⊢ φ` 與 `φ :: Γ ⊢ ψ` 得 `Γ ⊢ ψ`（`impI` + `impE`）
 
-**要做。**
+**要做**（對應 [`lesson-2.md`](lesson-2.md)；作者打勾，模型不要代寫）。
 
-- [ ] 上述 constructor 齊。
-- [ ] 導出規則齊。
+- [ ] 上述 constructor 齊。（HW2.1–HW2.4）
+- [ ] 導出規則齊。（HW2.5：另加吉祥物 `imp_id : ⊢ φ ⇒ φ`）
 - [ ] 每個 constructor 一行中文：對應哪條 NJ 規則。
 - [ ] **沒有** `lem`／`raa`／`dne` constructor。
-- [ ] `lake build`。
+- [ ] `lake build`。（HW2.5）
 
 **完成條件。** 型別檢查通過；用 `#check` 能看到 `impI` 的型別是 `(φ :: Γ ⊢ ψ) → (Γ ⊢ φ ⇒ ψ)` 這種形狀。
 
@@ -488,7 +492,7 @@ forces f w (φ ⇒ ψ)  :=
 |---|---|---|
 | 0 | Phase 0 | Lake 專案能編、能跑（**已完成**） |
 | 1 | Phase 1（[`lesson-1.md`](lesson-1.md) 作業） | 歸納型、定義連詞、scoped notation |
-| 2 | Phase 2 | 歸納謂詞 `Γ ⊢ φ` |
+| 2 | Phase 2（[`lesson-2.md`](lesson-2.md) 作業） | 歸納謂詞 `Γ ⊢ φ` |
 | 3 | Phase 3 | 用 constructor 組對象證明 |
 | 4 | Phase 4a + 5 | 後設歸納 + 結構／遞迴 |
 | 5 | Phase 6–7 | 反模型、`#print axioms` |
@@ -520,6 +524,7 @@ mylogic/
     TASKS.md
     AGENTS.md
     lesson-1.md              -- Phase 1 講義與作業（由 lession1.md 更正）
+    lesson-2.md              -- Phase 2 講義與作業（NJ 歸納謂詞）
 ```
 
 `Mylogic/Basic.lean`（hello）可刪可留；不要讓它成為邏輯入口。
@@ -530,4 +535,4 @@ Phase 8 之後再多 `Mylogic/FirstOrder/`。
 
 ## 下一 session 的第一句話
 
-作者改在瀏覽器繼續 Phase 1。讀 [`handoff.md`](handoff.md) 與 [`lesson-1.md`](lesson-1.md)，由作者依 HW1.1 → HW1.5 實作 `Formula.lean`。**不要代寫 Phase 1。** 不要先寫 Kripke，也不要先寫 FOL。
+Phase 1 的 `Formula.lean` 已在 repo 且 `lake build` 通過。下一件事是 [`lesson-2.md`](lesson-2.md)：作者依 HW2.1 → HW2.5 實作 `Deduction.lean`。**不要代寫 Phase 2。** 不要先寫 Kripke，也不要先寫 FOL。

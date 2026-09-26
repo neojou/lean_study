@@ -12,11 +12,12 @@
 
 1. 先讀本檔第 0–4 節，再決定要不要打開別的文件。
 2. 作者若在做 Phase 1：打開 [`lesson-1.md`](lesson-1.md)，**批改／答疑**。**不要**把 `Mylogic/Formula.lean` 寫完交給他。
-3. 作者若貼出作業或錯誤訊息：對照 `lesson-1.md` 的 HW1.1–HW1.5 驗收清單，指出哪一條沒過、為什麼。
-4. 作者若問「為什麼不直接寫程式」：用本檔第 1 節回答。
-5. 在 IPC 的後設性質做完之前，不要開模態、機率邏輯、FOL 實作、Mathlib。
+3. 作者若在做 Phase 2：打開 [`lesson-2.md`](lesson-2.md)，**批改／答疑**。**不要**把 `Mylogic/Deduction.lean` 寫完交給他。對照 HW2.1–HW2.5。
+4. 作者若貼出作業或錯誤訊息：對照該課的驗收清單，指出哪一條沒過、為什麼。
+5. 作者若問「為什麼不直接寫程式」：用本檔第 1 節回答。Phase 2 同一原則，講義是 `lesson-2.md`。
+6. 在 IPC 的後設性質做完之前，不要開模態、機率邏輯、FOL 實作、Mathlib。
 
-若瀏覽器裡的模型**看不到 repo**：請作者把本檔與 `lesson-1.md` 貼上（或至少貼第 11 節的開場白）。
+若瀏覽器裡的模型**看不到 repo**：請作者把本檔與當前那課的 `lesson-*.md` 貼上（或至少貼第 11 節的開場白）。
 
 ---
 
@@ -69,11 +70,12 @@
 |---|---|---|
 | **本檔 `handoff.md`** | 交接、現況、行為規範 | 必讀 |
 | [`lesson-1.md`](lesson-1.md) | Phase 1 講義 + HW1.1–1.5 | 作者在做 Phase 1 就讀 |
+| [`lesson-2.md`](lesson-2.md) | Phase 2 講義 + HW2.1–2.5（NJ、`Γ ⊢ φ`） | 作者在做 Phase 2 就讀 |
 | [`AGENTS.md`](AGENTS.md) | 硬約束、決策紀錄（給模型的短清單） | 建議讀 |
 | [`TASKS.md`](TASKS.md) | 全課綱 Phase 0–8 | 需要看中期路線再讀 |
 | [`first-order-logic.md`](first-order-logic.md) | 邏輯學規格（IPC／NJ／Kripke／IQC） | 作者問「公理是什麼」再讀 |
 
-讀檔順序：`handoff.md` →（Phase 1）`lesson-1.md` → 卡住再看 `AGENTS.md`。不要一開場把規格書第 14 節的量詞規則講完。
+讀檔順序：`handoff.md` → 當前那一課的 `lesson-*.md` → 卡住再看 `AGENTS.md`。不要一開場把規格書第 14 節的量詞規則講完。
 
 兩條 repo 線不要混：
 
@@ -90,22 +92,25 @@
 
 ### Phase 0 — 完成
 
-作者已能 `lake build`、`lake exe mylogic`，輸出 `Hello, world!`（在尚未誤加錯誤 import 之前；見下）。
+作者已能 `lake build`、`lake exe mylogic`，輸出 `Hello, world!`。
 
 - Lean `v4.33.1`；`lakefile.toml` **無 Mathlib**；`lake-manifest.json` 的 `packages` 為空。
-- 保留模板：`Mylogic/Basic.lean` 的 `hello := "world"`；`Main.lean` 印 Hello。**不要刪**，HW1.5 仍要求 exe 印 Hello。
+- 保留模板：`Mylogic/Basic.lean` 的 `hello := "world"`；`Main.lean` 印 Hello。**不要刪**。
 
-### Phase 1 — 講義已出，程式剛起頭，**尚未完成**
+### Phase 1 — 作者已實作，`lake build` 通過
 
-作者已開始碰檔案，但 **HW1.1 還沒做出歸納型**：
+- `Mylogic/Formula.lean`：五個 constructor（`atom`、`falsum`、`and`、`or`、`imp`），`neg`／`verum` 是 `def`，scoped 記號與 `Formula.size` 都在。型別參數名是 `a`。
+- `Mylogic.lean` 有 `import Mylogic.Basic` 與 `import Mylogic.Formula`（拼法正確）。
+- 不要重寫這份檔。早期「`import MyLogic.Formula` 讓 build 失敗」的紀錄已過時。
 
-- `Mylogic/Formula.lean` 目前幾乎是空的，只剩一行註解，大意是想寫 `⟪0⟫ ⋀ ∼⟪0⟫` 這種例子（連 inductive 都還沒有）。
-- `Mylogic.lean` 在 `import Mylogic.Basic` 之外多了一行 **`import MyLogic.Formula`**（大寫 L）。這是舊命名。正確是 `import Mylogic.Formula`。這個大小寫不一致會讓 **`lake build` 掛掉**（連結器找不到 `initialize_mylogic_MyLogic_Formula`）。
-- 這不表示模型該把 Formula 寫完。若作者問為什麼編不過：先提示 **import 必須是 `Mylogic.Formula`**，以及 HW1.1 要求檔案裡要有 `inductive Formula`。作業五才規定入口一定要 import；作業一可以先讓 `Formula.lean` 自己過檢查。
+### Phase 2 — 講義已出，程式尚未寫
+
+- 講義：[`lesson-2.md`](lesson-2.md)，作業 HW2.1–HW2.5。
+- `Mylogic/Deduction.lean` **還不存在**。由作者實作，模型不要代寫。
 
 ### 還沒開始
 
-`Deduction.lean`、`Examples.lean`、`Kripke.lean`、FOL、Modal、Probability。Phase 2 起仍照 `TASKS.md`，等 Phase 1 核取清單打完再談。
+`Examples.lean`、`Kripke.lean`、FOL、Modal、Probability。Phase 3 等 Phase 2 核取清單打完再談。
 
 ---
 
@@ -175,11 +180,11 @@ Lean 核心是 CIC。`P ∨ ¬P` 不是 kernel 公理；排中律走 `Classical.
 
 ---
 
-## 7. 中期路線（Phase 1 過關之後才走）
+## 7. 中期路線（Phase 2 作業做完之後）
 
-不要在瀏覽器第一輪就開工。記在這裡以免路線走丟：
+Phase 2 的做法以 [`lesson-2.md`](lesson-2.md) 為準，不要跳過作業直接寫後面的檔。記在這裡以免路線走丟：
 
-1. Phase 2：NJ，constructor 名稱與規格第 6 節一致（`ax`、`weaken`、`andI`／`andEL`／`andER`、`orIL`／`orIR`／`orE`、`impI`／`impE`、`falsumE`）。
+1. Phase 2：NJ，constructor 名稱與規格第 6 節一致（`ax`、`weaken`、`andI`／`andEL`／`andER`、`orIL`／`orIR`／`orE`、`impI`／`impE`、`falsumE`）。導出規則見講義 HW2.5。
 2. Phase 3：對象小定理 `⊢ φ ⇒ φ`、合取交換、雙重否定**引入**（消除不可證，不要硬證）。
 3. Phase 4–7：後設弱化、Kripke 健全性、兩世界 LEM 反模型、`#print axioms`。析取性質可稍後。
 4. Phase 8：一階，獨立模組，代入傾向 de Bruijn。
@@ -191,7 +196,7 @@ Lean 核心是 CIC。`P ∨ ¬P` 不是 kernel 公理；排中律走 `Classical.
 
 ## 8. 刻意先不做
 
-- 代寫 Phase 1 繳交檔。
+- 代寫 Phase 1／Phase 2 繳交檔。
 - 把 IPC 嵌進 `Prop` 當主線。
 - 在預設 NJ 加入 `Classical.em` 的翻譯（對照請另開 `Mylogic.Classical`，現在不開）。
 - Gödel、Hauptsatz、FOL 實作、Mathlib 測度、模態、機率。
@@ -221,13 +226,12 @@ Lean 核心是 CIC。`P ∨ ¬P` 不是 kernel 公理；排中律走 `Classical.
 我在 GitHub repo lean_study 的 mylogic/ 用 Lean 4 自建對象邏輯（後設是 Lean，對象是直覺主義命題邏輯）。
 
 請先讀 mylogic/docs/handoff.md。重點：
-- Phase 0 已完成（lake exe 原本印 Hello, world!）。
-- Phase 1 請當大學教授／助教：講義是 mylogic/docs/lesson-1.md。
-- 我自己依 HW1.1→HW1.5 寫 Mylogic/Formula.lean，請批改、答疑，不要代寫完整檔。
+- Phase 0 已完成。Phase 1 的 Formula.lean 已在 repo。
+- Phase 2 請當大學教授／助教：講義是 mylogic/docs/lesson-2.md。
+- 我自己依 HW2.1→HW2.5 寫 Mylogic/Deduction.lean，請批改、答疑，不要代寫完整檔。
 - 模組名是 Mylogic（不是 MyLogic），不要 import Mathlib。
-- 講義檔名是 mylogic/docs/lesson-1.md（舊名 lession1.md 已更正）。
 
-我現在做到 HW1.__ ；這是我的 Formula.lean／錯誤訊息：
+我現在做到 HW2.__ ；這是我的 Deduction.lean／錯誤訊息：
 ```
 
 （作者自己填作業號與貼檔。）
@@ -236,4 +240,4 @@ Lean 核心是 CIC。`P ∨ ¬P` 不是 kernel 公理；排中律走 `Classical.
 
 ## 12. 給下一輪模型的一句話
 
-> 作者改在瀏覽器做 Phase 1。`lesson-1.md` 存在，是因為他要自己學會把公式做成歸納型，不是要一份代寫的 `Formula.lean`。你當教授：對作業、講兩層語言、盯 `Mylogic` 這個拼法。五份作業過了再談 NJ。
+> Phase 1 的公式樹已經在 `Formula.lean`。Phase 2 讀 `lesson-2.md`：作者自己把 `Γ ⊢ φ` 做成 NJ 歸納謂詞。你當教授，不要代寫 `Deduction.lean`。HW2.1–2.5 過了再談 Phase 3 的對象小定理。
