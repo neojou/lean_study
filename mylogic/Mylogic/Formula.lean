@@ -72,4 +72,43 @@ def ex5 : Formula Nat :=
 example (b : Formula Nat) : Formula.neg b = Formula.imp b Formula.falsum := rfl
 example : (Formula.verum : Formula Nat) = Formula.imp Formula.falsum Formula.falsum := rfl
 
+-- *** HW 1.3 ***
+
+
+scoped notation "⟂" => Formula.falsum
+scoped notation "⊤ᵢ" => Formula.verum
+scoped notation "⟪" p "⟫" => Formula.atom p
+
+scoped prefix:max "∼" => Formula.neg
+scoped infixr:35 " ⋀ " => Formula.and
+scoped infixr:30 " ⋁ " => Formula.or
+scoped infixr:25 " ⇒ " => Formula.imp
+
+-- p ⋀ q（令 p = 0、q = 1）
+def ex6 : Formula Nat :=
+  ⟪0⟫ ⋀ ⟪1⟫
+
+-- (p ⋀ q) ⇒ ⟂ (令 p = 0、q = 1）
+def ex7 : Formula Nat :=
+  ⟪0⟫ ⋀ ⟪1⟫ ⇒ ⟂
+
+-- p ⇒ (q ⋁ ⟂) (令 p = 0、q = 1）
+def ex8 : Formula Nat :=
+  ⟪0⟫ ⇒ ( ⟪0⟫ ⋁ ⟂ )
+
+example : (⟪0⟫ ⋀ ⟪1⟫ ⇒ ⟪2⟫) =
+    Formula.imp (Formula.and (.atom 0) (.atom 1)) (.atom 2) := rfl
+
+example : (∼⟪0⟫ ⋀ ⟪1⟫) =
+    Formula.and (Formula.neg (.atom 0)) (.atom 1) := rfl
+
+example : (⟪0⟫ ⇒ ⟪1⟫ ⇒ ⟪2⟫) =
+    Formula.imp (.atom 0) (Formula.imp (.atom 1) (.atom 2)) := rfl
+
+example : (∼∼⟪0⟫) =
+    Formula.neg (Formula.neg (.atom 0)) := rfl
+
+example : Formula Nat := ⟪0⟫ ⋀ ∼⟪0⟫
+
+
 end Mylogic
