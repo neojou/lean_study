@@ -1,0 +1,10 @@
+name = "irrational_number"
+version = "0.1.0"
+defaultTargets = ["irrational_number"]
+
+[[lean_lib]]
+name = "IrrationalNumber"
+
+[[lean_exe]]
+name = "irrational_number"
+root = "Main"
